@@ -24,9 +24,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SecondActivity"
+            android:name=".ActivityAddItem"
             android:exported="false"
-            android:label="@string/title_activity_second"
+            android:label="@string/ActivityAddItem"
             android:theme="@style/Theme.MyApplication">
         </activity>
     </application>
