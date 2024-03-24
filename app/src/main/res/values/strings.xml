@@ -20,4 +20,9 @@
     <string name="name">name</string>
     <string name="description">description</string>
     <string name="ActivityAddItem">Редактор привычек</string>
+    <string name="title_habits">habits</string>
+    <string name="title_info">info</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="about_text">123546654456645645</string>
 </resources>

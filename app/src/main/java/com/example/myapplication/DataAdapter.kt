@@ -9,6 +9,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.habit.Habit
 
 class DataAdapter(private var items: MutableList<Habit>) : RecyclerView.Adapter<DataAdapter.ViewHolder>() {
+    protected lateinit var clickListener: View.OnClickListener
+
+    fun setOnItemClickListener(clickListener: View.OnClickListener) {
+        this.clickListener = clickListener
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(R.layout.list_item, parent, false)
@@ -36,26 +41,26 @@ class DataAdapter(private var items: MutableList<Habit>) : RecyclerView.Adapter<
 
         fun bind(habit: Habit) {
             val timesStr =
-                if (habit.Times in 11..19 || habit.Times % 10 in 0..1 || habit.Times % 10 in 5..9) {
+                if (habit.times in 11..19 || habit.times % 10 in 0..1 || habit.times % 10 in 5..9) {
                     "раз"
                 } else {
                     "раза"
                 }
-            val periodStr = if (habit.Period in 11..19) {
+            val periodStr = if (habit.period in 11..19) {
                 "дней"
-            } else if (habit.Period % 10 == 1) {
+            } else if (habit.period % 10 == 1) {
                 "день"
-            } else if (habit.Period % 10 in 2..4) {
+            } else if (habit.period % 10 in 2..4) {
                 "дня"
             } else {
                 "дней"
             }
-            val repeatValue = "${habit.Times} $timesStr, раз в ${habit.Period} $periodStr"
+            val repeatValue = "${habit.times} $timesStr, раз в ${habit.period} $periodStr"
 
-            name.text = habit.Name
-            description.text = habit.Description
-            priority.text = habit.Priority.value
-            type.text = habit.Type.value
+            name.text = habit.name
+            description.text = habit.description
+            priority.text = habit.priority.value
+            type.text = habit.type.value
             repeat.text = repeatValue
         }
     }

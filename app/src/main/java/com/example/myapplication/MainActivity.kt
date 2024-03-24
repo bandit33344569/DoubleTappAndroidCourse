@@ -1,80 +1,62 @@
 package com.example.myapplication
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import com.example.myapplication.habit.Habit
-import androidx.recyclerview.widget.RecyclerView
-import android.os.Parcelable
-import android.view.View
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.recyclerview.widget.LinearLayoutManager
+import android.view.MenuItem
+import androidx.fragment.app.FragmentActivity
+
+import androidx.fragment.app.Fragment
+
+import com.google.android.material.navigation.NavigationView
 
 
-class MainActivity : ComponentActivity() {
 
-    private var habits = mutableListOf<Habit>()
+class MainActivity : FragmentActivity(), FragmentList.ListCallback, FragmentEditHabit.EditHabitCallback,NavigationView.OnNavigationItemSelectedListener{
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
-    private lateinit var viewManager: RecyclerView.LayoutManager
+    private val LIST_TAG = "ListFragment"
+    private val EDIT_HABIT_TAG = "EditHabitFragment"
+    private val ABOUT_TAG = "About Fragment"
+    //private val viewPagerFragment = ViewPagerFragment()
 
-    private var addHabitLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-            result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val data: Intent? = result.data
-            val habit = data?.getParcelableExtra<Habit>("habit")
-            if (habit != null) {
-                habits.add(habit)
-            }
-        }
-    }
-
-    private var editHabitLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-            result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val data: Intent? = result.data
-            val habit = data?.getParcelableExtra<Habit>("habit")
-            val habitPosition = data?.getIntExtra("habitPosition", -1)
-            if (habit != null) {
-                habits[habitPosition!!] = habit
-                viewAdapter.notifyItemChanged(habitPosition)
-            }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
-        if (savedInstanceState != null) {
-            habits = savedInstanceState.getParcelableArrayList<Parcelable>("habits") as MutableList<Habit>
+        val navView = findViewById<NavigationView>(R.id.navigation_drawer)
+        navView.setNavigationItemSelectedListener(this)
+
+        if (savedInstanceState == null) {
+            replaceFragment(viewPagerFragment, LIST_TAG)
         }
-        viewManager = LinearLayoutManager(this)
-        viewAdapter = DataAdapter(habits)
-
-        recyclerView = findViewById(R.id.habits_list_recycler_view)
-        recyclerView.layoutManager = viewManager
-        recyclerView.adapter = viewAdapter
     }
 
-
-    fun onAddHabit(view: View) {
-        val intent = Intent(this, ActivityAddItem::class.java)
-        addHabitLauncher.launch(intent)
+    override fun onSaveHabit(habit: Habit, habitPosition: Int) {
+        val bundle = Bundle()
+        bundle.putInt("habitPosition", habitPosition)
+        bundle.putParcelable("habit", habit)
+        viewPagerFragment.arguments = bundle
+        onBackPressed()
     }
 
-    fun onEditHabit(view: View) {
-        val intent = Intent(this, ActivityAddItem::class.java)
-        val position = viewManager.getPosition(view)
-        val habit = (viewAdapter as DataAdapter).getHabit(position)
-        intent.putExtra("habit", habit)
-        intent.putExtra("habitPosition", position)
-        editHabitLauncher.launch(intent)
+    override fun onAddHabit() {
+        replaceFragment(FragmentEditHabit(), EDIT_HABIT_TAG)
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putParcelableArrayList("habits", ArrayList<Parcelable>(habits))
+    override fun onEditHabit(habit: Habit, habitPosition: Int) {
+        val fragment = FragmentEditHabit.newInstance(habit, habitPosition)
+        replaceFragment(fragment, EDIT_HABIT_TAG)
     }
+
+    override fun onNavigationItemSelected(p0: MenuItem): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    private fun replaceFragment(fragment: Fragment, tag :String){
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_container, fragment, tag)
+            .addToBackStack(tag)
+            .commit()
+    }
+
 }
