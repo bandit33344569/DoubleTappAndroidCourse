@@ -6,10 +6,11 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class Habit(
-    var Name: String,
-    var Description: String,
-    var Priority: Priority,
-    var Type: Type,
-    var Times: Int,
-    var Period: Int
-) : Parcelable
+    var name: String,
+    var description: String,
+    var priority: Priority,
+    var type: Type,
+    var times: Int,
+    var period: Int
+) : Parcelable {
+}

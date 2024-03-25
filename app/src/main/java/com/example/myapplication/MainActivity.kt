@@ -1,80 +1,83 @@
 package com.example.myapplication
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import com.example.myapplication.habit.Habit
-import androidx.recyclerview.widget.RecyclerView
-import android.os.Parcelable
 import android.view.View
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.ui.NavigationUI
+import com.example.myapplication.habit.Habit
+import com.example.myapplication.listFragments.goodhabits.ListFragment.ListCallback
+import com.google.android.material.navigation.NavigationView
 
 
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity(), ListCallback, EditHabitCallback {
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navigationView: NavigationView
+    private lateinit var navController: NavController
 
-    private var habits = mutableListOf<Habit>()
-
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
-    private lateinit var viewManager: RecyclerView.LayoutManager
-
-    private var addHabitLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-            result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val data: Intent? = result.data
-            val habit = data?.getParcelableExtra<Habit>("habit")
-            if (habit != null) {
-                habits.add(habit)
-            }
-        }
-    }
-
-    private var editHabitLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-            result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val data: Intent? = result.data
-            val habit = data?.getParcelableExtra<Habit>("habit")
-            val habitPosition = data?.getIntExtra("habitPosition", -1)
-            if (habit != null) {
-                habits[habitPosition!!] = habit
-                viewAdapter.notifyItemChanged(habitPosition)
-            }
-        }
-    }
-
+    private val EDIT_HABIT_TAG = "EditHabitFragment"
+    private val viewPagerFragment = HomeFragment()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
-        if (savedInstanceState != null) {
-            habits = savedInstanceState.getParcelableArrayList<Parcelable>("habits") as MutableList<Habit>
+        navigationView = findViewById(R.id.navigation_view)
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment)
+        NavigationUI.setupWithNavController(navigationView, navController)
+        drawerLayout = findViewById(R.id.drawer_layout)
+
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+
+                R.id.menu_home -> {
+                    if (navController.currentDestination?.id != R.id.homeFragment) {
+                        navController.navigate(R.id.action_aboutFragment2_to_homeFragment)
+                        drawerLayout.closeDrawer(GravityCompat.START)
+                        true
+                    }
+                    false
+                }
+
+                R.id.menu_about -> {
+                    if (navController.currentDestination?.id != R.id.aboutFragment) {
+                        navController.navigate(R.id.action_homeFragment_to_aboutFragment)
+                        drawerLayout.closeDrawer(GravityCompat.START)
+                        true
+                    }
+                    false
+                }
+
+                else -> false
+            }
         }
-        viewManager = LinearLayoutManager(this)
-        viewAdapter = DataAdapter(habits)
+    }
 
-        recyclerView = findViewById(R.id.habits_list_recycler_view)
-        recyclerView.layoutManager = viewManager
-        recyclerView.adapter = viewAdapter
+    private fun replaceFragment(fragment: Fragment, tag: String) {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.nav_host_fragment, fragment, tag)
+            .addToBackStack(tag)
+            .commit()
     }
 
 
-    fun onAddHabit(view: View) {
-        val intent = Intent(this, ActivityAddItem::class.java)
-        addHabitLauncher.launch(intent)
+    override fun onSaveHabit(habit: Habit, habitPosition: Int) {
+        val bundle = Bundle()
+        bundle.putInt("habitPosition", habitPosition)
+        bundle.putParcelable("habit", habit)
+        viewPagerFragment.arguments = bundle
     }
 
-    fun onEditHabit(view: View) {
-        val intent = Intent(this, ActivityAddItem::class.java)
-        val position = viewManager.getPosition(view)
-        val habit = (viewAdapter as DataAdapter).getHabit(position)
-        intent.putExtra("habit", habit)
-        intent.putExtra("habitPosition", position)
-        editHabitLauncher.launch(intent)
+    override fun onAddHabit() {
+        replaceFragment(EditHabitFragment(), EDIT_HABIT_TAG)
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putParcelableArrayList("habits", ArrayList<Parcelable>(habits))
+    override fun onEditHabit(habit: Habit, habitPosition: Int) {
+        val fragment = EditHabitFragment.newInstance(habit, habitPosition)
+        replaceFragment(fragment, EDIT_HABIT_TAG)
     }
+
 }
