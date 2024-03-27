@@ -20,4 +20,12 @@
             android:id="@+id/action_aboutFragment2_to_homeFragment"
             app:destination="@id/homeFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/editHabitFragment"
+        android:name="com.example.myapplication.EditHabitFragment"
+        android:label="EditHabitFragment" >
+        <action
+            android:id="@+id/action_editHabitFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
 </navigation>

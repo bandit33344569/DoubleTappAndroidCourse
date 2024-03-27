@@ -9,7 +9,7 @@ import com.example.myapplication.habit.Habit
 
 class HabitAdapter(private var habitList: List<Habit>) :
     RecyclerView.Adapter<HabitAdapter.ViewHolder>() {
-    protected lateinit var clickListener: View.OnClickListener
+    private lateinit var clickListener: View.OnClickListener
 
     fun setOnItemClickListener(clickListener: View.OnClickListener) {
         this.clickListener = clickListener

@@ -42,7 +42,6 @@ open class ListFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-
         callback = activity as ListCallback
     }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,12 +58,7 @@ open class ListFragment : Fragment() {
         }
 
         viewAdapter = HabitAdapter(filteredHabits)
-        (viewAdapter as HabitAdapter).setOnItemClickListener(object: View.OnClickListener {
-
-            override fun onClick(v: View?) {
-                onEditHabit(v)
-            }
-        })
+        (viewAdapter as HabitAdapter).setOnItemClickListener { v -> onEditHabit(v) }
     }
 
     override fun onCreateView(
@@ -105,7 +99,7 @@ open class ListFragment : Fragment() {
         return view
     }
 
-    fun onEditHabit(v: View?) {
+    private fun onEditHabit(v: View?) {
         if (v != null) {
             val position = viewManager.getPosition(v)
             val habit = (viewAdapter as HabitAdapter).getHabit(position)

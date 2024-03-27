@@ -18,8 +18,8 @@ class HomeFragment : Fragment() {
     private lateinit var viewPager2: ViewPager2
 
     private val habits = mutableListOf<Habit>()
-    val goodListFragment = ListFragment.newInstance(Type.Good)
-    val badListFragment = ListFragment.newInstance(Type.Bad)
+    private val goodListFragment = ListFragment.newInstance(Type.Good)
+    private val badListFragment = ListFragment.newInstance(Type.Bad)
 
     override fun onCreateView(
         inflater: LayoutInflater,

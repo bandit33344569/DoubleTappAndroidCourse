@@ -5,15 +5,15 @@ import com.example.myapplication.habit.Type
 
 object HabitsManager {
     private val habitsList = mutableListOf<Habit>()
-    private val goodhabitsList = mutableListOf<Habit>()
-    private val badhabitsList = mutableListOf<Habit>()
+    private val goodHabitsList = mutableListOf<Habit>()
+    private val badHabitsList = mutableListOf<Habit>()
 
     fun addHabit(habit: Habit) {
         habitsList.add(habit)
         if (habit.type == Type.Good){
-            goodhabitsList.add(habit)
+            goodHabitsList.add(habit)
         }
-        else badhabitsList.add(habit)
+        else badHabitsList.add(habit)
     }
 
     fun removeHabit(habit: Habit) {
@@ -25,11 +25,11 @@ object HabitsManager {
     }
 
     fun getBadHabits(): List<Habit> {
-        return badhabitsList
+        return badHabitsList
     }
 
     fun getGoodHabits(): List<Habit> {
-        return goodhabitsList
+        return goodHabitsList
     }
 
     private fun filterHabitsByType(type: Type): List<Habit> {

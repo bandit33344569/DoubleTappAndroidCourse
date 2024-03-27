@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">My Application</string>
     <string name="fab_to_add_habit">Fab to add habit</string>
-    <string name="edit_habit_title">Изменить привычку</string>
+    <string name="edit_habit_title">Редактирование привычки</string>
     <string name="habit_name_hint">Название</string>
     <string name="habit_description_hint">Описание</string>
     <string name="habit_priority_text">Приоритет</string>
