@@ -1,4 +1,4 @@
-package com.example.myapplication.listFragments.goodhabits
+package com.example.myapplication
 
 import android.content.Context
 import android.os.Bundle
@@ -9,8 +9,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication.HabitAdapter
-import com.example.myapplication.R
 import com.example.myapplication.habit.Habit
 import com.example.myapplication.habit.Type
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -50,8 +48,7 @@ open class ListFragment : Fragment() {
         if (savedInstanceState != null) {
             filteredHabits = savedInstanceState.getParcelableArrayList<Parcelable>("filteredHabits") as MutableList<Habit>
             filterType = savedInstanceState.getSerializable("type") as Type
-        }
-        else {
+        } else {
             arguments?.let {
                 filterType = it.getSerializable("type") as Type
             }
@@ -67,7 +64,6 @@ open class ListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_list_habits, container, false)
-
         viewManager = LinearLayoutManager(context)
         recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.layoutManager = viewManager
@@ -99,6 +95,9 @@ open class ListFragment : Fragment() {
         return view
     }
 
+
+
+
     private fun onEditHabit(v: View?) {
         if (v != null) {
             val position = viewManager.getPosition(v)
@@ -116,4 +115,5 @@ open class ListFragment : Fragment() {
         outState.putParcelableArrayList("filteredHabits", ArrayList<Parcelable>(filteredHabits))
         outState.putSerializable("type", filterType)
     }
+
 }

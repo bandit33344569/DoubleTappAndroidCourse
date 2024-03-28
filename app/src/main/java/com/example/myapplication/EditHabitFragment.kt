@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Spinner
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.example.myapplication.habit.Habit
 import com.example.myapplication.habit.Priority
@@ -61,8 +62,10 @@ class EditHabitFragment : Fragment() {
         var habit: Habit? = null
         var habitPosition = -1
         arguments?.let {
-            habit = it.getParcelable("habit")
-            habitPosition = it.getInt("habitPosition")
+            val args = HomeFragmentArgs.fromBundle(it)
+            println(args)
+            habit = args.habit
+            habitPosition = args.habitPosition
         }
         this.habitPosition = habitPosition
 

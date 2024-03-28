@@ -22,5 +22,5 @@
     <string name="ActivityAddItem">Редактор привычек</string>
     <string name="title_about">О приложении</string>
     <string name="title_habits">Привычки</string>
-    <string name="about_fragment">About Fragment</string>
+    <string name="about_fragment">Информация о приложении</string>
 </resources>

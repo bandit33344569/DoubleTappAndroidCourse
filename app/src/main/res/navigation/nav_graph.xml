@@ -11,6 +11,22 @@
         <action
             android:id="@+id/action_homeFragment_to_aboutFragment"
             app:destination="@id/aboutFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_editHabitFragment_WithoutArgs"
+            app:destination="@+id/editHabitFragment">
+        </action>
+        <action
+            android:id="@+id/action_homeFragment_to_editHabitFragment"
+            app:destination="@id/editHabitFragment" />
+        <argument
+            android:name="habit"
+            app:argType="com.example.myapplication.habit.Habit"
+            android:defaultValue="@null"
+            app:nullable="true"/>
+        <argument
+            android:name="habitPosition"
+            app:argType="integer"
+            android:defaultValue="-1"/>
     </fragment>
     <fragment
         android:id="@+id/aboutFragment"
@@ -26,6 +42,16 @@
         android:label="EditHabitFragment" >
         <action
             android:id="@+id/action_editHabitFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
+            app:destination="@id/homeFragment"
+            app:launchSingleTop="false" />
+        <argument
+            android:name="habit"
+            app:argType="com.example.myapplication.habit.Habit"
+            android:defaultValue="@null"
+            app:nullable="true"/>
+        <argument
+            android:name="habitPosition"
+            app:argType="integer"
+            android:defaultValue="-1"/>
     </fragment>
 </navigation>

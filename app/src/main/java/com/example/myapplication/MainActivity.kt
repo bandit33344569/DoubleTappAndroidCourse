@@ -6,12 +6,9 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavController
-import androidx.navigation.NavOptions
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.NavigationUI
 import com.example.myapplication.habit.Habit
-import com.example.myapplication.listFragments.goodhabits.ListFragment.ListCallback
+import com.example.myapplication.ListFragment.ListCallback
 import com.google.android.material.navigation.NavigationView
 
 
@@ -34,7 +31,6 @@ class MainActivity : FragmentActivity(),ListCallback, EditHabitCallback {
                     if (navController.currentDestination?.id != R.id.homeFragment) {
                         navController.navigate(R.id.action_aboutFragment2_to_homeFragment)
                         drawerLayout.closeDrawer(GravityCompat.START)
-                        true
                     }
                     false
                 }
@@ -43,7 +39,6 @@ class MainActivity : FragmentActivity(),ListCallback, EditHabitCallback {
                     if (navController.currentDestination?.id != R.id.aboutFragment) {
                         navController.navigate(R.id.action_homeFragment_to_aboutFragment)
                         drawerLayout.closeDrawer(GravityCompat.START)
-                        true
                     }
                     false
                 }
@@ -54,30 +49,18 @@ class MainActivity : FragmentActivity(),ListCallback, EditHabitCallback {
     }
 
     override fun onAddHabit() {
-        replaceFragment(EditHabitFragment())
+        navController.navigate(R.id.action_homeFragment_to_editHabitFragment_WithoutArgs)
     }
 
     override fun onEditHabit(habit: Habit, habitPosition: Int) {
-        val fragment = EditHabitFragment.newInstance(habit, habitPosition)
-        replaceFragment(fragment)
+        val action = HomeFragmentDirections.actionHomeFragmentToEditHabitFragment(habit, habitPosition)
+        navController.navigate(action)
     }
 
     override fun onSaveHabit(habit: Habit, habitPosition: Int) {
-        val homeFragment = supportFragmentManager.findFragmentByTag("HomeFragment")
-        val bundle = Bundle()
-        bundle.putInt("habitPosition", habitPosition)
-        bundle.putParcelable("habit", habit)
-        if (homeFragment != null) {
-            homeFragment.arguments = bundle
-        }
-        onBackPressed()
-    }
-
-    private fun replaceFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.nav_host_fragment, fragment)
-            .addToBackStack(null)
-            .commit()
+        val action = EditHabitFragmentDirections.actionEditHabitFragmentToHomeFragment(habit, habitPosition)
+        navController.navigate(action)
     }
 
 }
+
