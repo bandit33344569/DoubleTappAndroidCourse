@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.fragments
 
 import android.content.Context
 import android.os.Bundle
@@ -10,15 +10,21 @@ import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Spinner
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.example.myapplication.R
 import com.example.myapplication.habit.Habit
 import com.example.myapplication.habit.Priority
 import com.example.myapplication.habit.Type
+import com.example.myapplication.models.HabitModel
+import com.example.myapplication.viewModels.EditHabitViewModel
+import java.util.UUID
 
-class EditHabitFragment : Fragment() {
-    private var habitPosition = -1
-    var callback: EditHabitCallback? = null
+class EditHabitFragment: Fragment() {
+    private var habitId: UUID? = null
+    private var callback: EditHabitCallback? = null
+    private lateinit var viewModel: EditHabitViewModel
 
     private val habitPriorities = mapOf(
         Priority.Low to 0,
@@ -32,17 +38,16 @@ class EditHabitFragment : Fragment() {
         "Высокий" to Priority.High
     )
 
-    private val habitTypeToId = mapOf(
+    private val habitTypeToId = mapOf (
         Type.Good to R.id.habit_type_good,
         Type.Bad to R.id.habit_type_bad
     )
 
     companion object {
-        fun newInstance(habit: Habit, habitPosition: Int): EditHabitFragment {
+        fun newInstance(habitId: UUID): EditHabitFragment {
             val fragment = EditHabitFragment()
             val bundle = Bundle()
-            bundle.putInt("habitPosition", habitPosition)
-            bundle.putParcelable("habit", habit)
+            bundle.putSerializable("habitId", habitId)
             fragment.arguments = bundle
             return fragment
         }
@@ -50,7 +55,18 @@ class EditHabitFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+
         callback = activity as EditHabitCallback
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel = ViewModelProvider(this, object: ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return EditHabitViewModel(HabitModel.getInstance()) as T
+            }
+        })[EditHabitViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -59,38 +75,37 @@ class EditHabitFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.edit_habit_fragment, container, false)
-        var habit: Habit? = null
-        var habitPosition = -1
         arguments?.let {
-            val args = HomeFragmentArgs.fromBundle(it)
-            println(args)
-            habit = args.habit
-            habitPosition = args.habitPosition
+            val habitIdSerializable = it.getSerializable("habitId")
+            if (habitIdSerializable is UUID) {
+                habitId = habitIdSerializable
+            }
         }
-        this.habitPosition = habitPosition
 
-        if (habit != null) {
+        if (habitId != null) {
+            val habit = viewModel.getHabitById(habitId!!)
+
             val habitName = view.findViewById<EditText>(R.id.habit_name_edit)
             habitName.setText(habit!!.name)
 
             val habitDescription = view.findViewById<EditText>(R.id.habit_description_edit)
-            habitDescription.setText(habit!!.description)
+            habitDescription.setText(habit.description)
 
             val habitPriority = view.findViewById<Spinner>(R.id.habit_priority_edit)
-            val selection = habitPriorities[habit!!.priority]
+            val selection = habitPriorities[habit.priority]
             if (selection != null) {
                 habitPriority.setSelection(selection)
             }
 
-            val habitTypeId = habitTypeToId[habit!!.type] ?: R.id.habit_type_good
+            val habitTypeId = habitTypeToId[habit.type] ?: R.id.habit_type_good
             val habitType = view.findViewById<RadioButton>(habitTypeId)
             habitType.isChecked = true
 
             val habitTimes = view.findViewById<EditText>(R.id.habit_times_edit)
-            habitTimes.setText(habit!!.times.toString())
+            habitTimes.setText(habit.times.toString())
 
             val habitPeriod = view.findViewById<EditText>(R.id.habit_period_edit)
-            habitPeriod.setText(habit!!.period.toString())
+            habitPeriod.setText(habit.period.toString())
         }
 
         return view
@@ -104,35 +119,43 @@ class EditHabitFragment : Fragment() {
             val type = view.findViewById<RadioGroup>(R.id.habit_type_edit)
             val times = view.findViewById<EditText>(R.id.habit_times_edit)
             val period = view.findViewById<EditText>(R.id.habit_period_edit)
-            val priorityValue =
-                priorityIndexToEnum[priority.selectedItem.toString()] ?: Priority.High
+
+            val priorityValue = priorityIndexToEnum[priority.selectedItem.toString()] ?: Priority.High;
+
             val typeValue = if (type.checkedRadioButtonId == R.id.habit_type_good) {
                 Type.Good
             } else {
                 Type.Bad
             }
 
-            val timesValue = if (times.text.toString() == "") {
-                1
+            val habit: Habit?
+            if (habitId == null) {
+                habit = Habit(
+                    name.text.toString() ?: "",
+                    description.text.toString() ?: "",
+                    priorityValue ?: Priority.High,
+                    typeValue ?: Type.Good,
+                    times?.text?.toString()?.toInt() ?: 1,
+                    period?.text?.toString()?.toInt() ?: 1
+                )
             } else {
-                times.text.toString().toInt()
+                habit = Habit(
+                    name.text.toString() ?: "",
+                    description.text.toString() ?: "",
+                    priorityValue ?: Priority.High,
+                    typeValue ?: Type.Good,
+                    times?.text?.toString()?.toInt() ?: 1,
+                    period?.text?.toString()?.toInt() ?: 1,
+                    habitId!!
+                )
             }
 
-            val periodValue = if (period.text.toString() == "") {
-                1
+            if (habitId == null) {
+                viewModel.addHabit(habit)
             } else {
-                period.text.toString().toInt()
+                viewModel.editHabit(habit)
             }
-
-            val habit = Habit(
-                name.text.toString(),
-                description.text.toString(),
-                priorityValue,
-                typeValue,
-                timesValue,
-                periodValue,
-            )
-            callback?.onSaveHabit(habit, habitPosition)
+            callback?.onSaveHabit()
         }
 
         val saveBtn = view.findViewById<Button>(R.id.save_habit)
@@ -143,5 +166,5 @@ class EditHabitFragment : Fragment() {
 }
 
 interface EditHabitCallback {
-    fun onSaveHabit(habit: Habit, habitPosition: Int)
+    fun onSaveHabit()
 }

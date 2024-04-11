@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/homeFragment">
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.myapplication.HomeFragment"
-        android:label="HomeFragment" >
+        android:name="com.example.myapplication.fragments.HomeFragment"
+        android:label="HomeFragment">
         <action
             android:id="@+id/action_homeFragment_to_aboutFragment"
             app:destination="@id/aboutFragment" />
@@ -19,18 +18,14 @@
             android:id="@+id/action_homeFragment_to_editHabitFragment"
             app:destination="@id/editHabitFragment" />
         <argument
-            android:name="habit"
-            app:argType="com.example.myapplication.habit.Habit"
+            android:name="habitId"
+            app:argType="java.util.UUID"
             android:defaultValue="@null"
             app:nullable="true"/>
-        <argument
-            android:name="habitPosition"
-            app:argType="integer"
-            android:defaultValue="-1"/>
     </fragment>
     <fragment
         android:id="@+id/aboutFragment"
-        android:name="com.example.myapplication.AboutFragment"
+        android:name="com.example.myapplication.fragments.AboutFragment"
         android:label="AboutFragment" >
         <action
             android:id="@+id/action_aboutFragment2_to_homeFragment"
@@ -38,20 +33,16 @@
     </fragment>
     <fragment
         android:id="@+id/editHabitFragment"
-        android:name="com.example.myapplication.EditHabitFragment"
+        android:name="com.example.myapplication.fragments.EditHabitFragment"
         android:label="EditHabitFragment" >
         <action
             android:id="@+id/action_editHabitFragment_to_homeFragment"
             app:destination="@id/homeFragment"
-            app:launchSingleTop="false" />
+            app:launchSingleTop="true" />
         <argument
-            android:name="habit"
-            app:argType="com.example.myapplication.habit.Habit"
+            android:name="habitId"
+            app:argType="java.util.UUID"
             android:defaultValue="@null"
             app:nullable="true"/>
-        <argument
-            android:name="habitPosition"
-            app:argType="integer"
-            android:defaultValue="-1"/>
     </fragment>
 </navigation>

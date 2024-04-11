@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.fragments
 
 import android.os.Bundle
 import android.os.Parcelable
@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.example.myapplication.R
 import com.example.myapplication.habit.Habit
 import com.example.myapplication.habit.Type
 import com.google.android.material.tabs.TabLayout
@@ -44,28 +45,6 @@ class HomeFragment : Fragment() {
             }
         }.attach()
 
-        val args = EditHabitFragmentArgs.fromBundle(requireArguments())
-        val habit = args.habit
-        val habitPosition = args.habitPosition
-        if (savedInstanceState!= null){
-            habits = savedInstanceState.getParcelableArrayList<Parcelable>("habits") as MutableList<Habit>
-        }
-        println(habits.toString())
-        if (habit != null) {
-            if (habitPosition == -1) {
-                habits.add(habit)
-            } else {
-                habits[habitPosition] = habit
-            }
-            val goodBundle = Bundle()
-            goodBundle.putParcelableArrayList("habits", ArrayList<Habit>(habits))
-            goodBundle.putSerializable("type", Type.Good)
-            goodListFragment.arguments = goodBundle
-            val badBundle = Bundle()
-            badBundle.putParcelableArrayList("habits", ArrayList<Habit>(habits))
-            badBundle.putSerializable("type", Type.Bad)
-            badListFragment.arguments = badBundle
-        }
 
         return view
     }
