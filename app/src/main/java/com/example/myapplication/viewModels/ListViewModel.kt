@@ -2,14 +2,21 @@ package com.example.myapplication.viewModels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import com.example.myapplication.database.HabitDatabase
 import com.example.myapplication.habit.Habit
 import com.example.myapplication.habit.PrioritySort
 import com.example.myapplication.habit.Type
-import com.example.myapplication.models.HabitModel
+
 import java.util.Locale
 
-class ListViewModel(private val model: HabitModel, private val habitType: Type): ViewModel() {
+class ListViewModel(private val db: HabitDatabase, private val habitType: Type): ViewModel() {
+    private lateinit var allHabits: List<Habit>
+    private val getAllObserver = Observer<List<Habit>> { habits ->
+        allHabits = habits
+        applySettings(habits)
+    }
     private val mutableHabits: MutableLiveData<List<Habit>> = MutableLiveData()
 
     val habits: LiveData<List<Habit>> = mutableHabits
@@ -18,34 +25,33 @@ class ListViewModel(private val model: HabitModel, private val habitType: Type):
     private var prioritySort = PrioritySort.None
 
     init {
-        getHabits()
+        db.habitDao().getAll().observeForever(getAllObserver)
     }
 
-    fun getHabits() {
-        applySettings()
+    override fun onCleared() {
+        super.onCleared()
+        db.habitDao().getAll().removeObserver(getAllObserver)
     }
 
-    fun setNameAndDescrFilter(sequence: String) {
+    fun setSearchFilter(sequence: String) {
         this.sequence = sequence.lowercase(Locale.ROOT)
-        applySettings()
+        applySettings(allHabits)
     }
 
     fun setPrioritySort(prioritySort: PrioritySort) {
         this.prioritySort = prioritySort
-        applySettings()
+        applySettings(allHabits)
     }
 
-    private fun applySettings() {
-        var filteredHabits = filterByType()
+    private fun applySettings(habits: List<Habit>) {
+        var filteredHabits = filterByType(habits)
         filteredHabits = filterBySequence(filteredHabits)
         filteredHabits = sortByPriority(filteredHabits)
         mutableHabits.value = filteredHabits
-
     }
 
-    private fun filterByType(): List<Habit> {
-        val allHabits = model.getAll()
-        return allHabits.filter{it.type == habitType}
+    private fun filterByType(habits: List<Habit>): List<Habit> {
+        return habits.filter{it.type == habitType}
     }
 
     private fun filterBySequence(habits: List<Habit>): List<Habit> {

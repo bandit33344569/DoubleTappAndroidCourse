@@ -15,7 +15,6 @@ import com.example.myapplication.fragments.EditHabitFragmentDirections
 import com.example.myapplication.fragments.HomeFragmentDirections
 import com.example.myapplication.fragments.ListCallback
 import com.google.android.material.navigation.NavigationView
-import java.util.UUID
 
 
 class MainActivity : FragmentActivity(), ListCallback, EditHabitCallback {
@@ -79,7 +78,7 @@ class MainActivity : FragmentActivity(), ListCallback, EditHabitCallback {
         navController.navigate(action)
     }
 
-    override fun onEditHabit(habitId: UUID) {
+    override fun onEditHabit(habitId: Int) {
         val action = HomeFragmentDirections.actionHomeFragmentToEditHabitFragment(habitId)
         navController.navigate(action)
     }

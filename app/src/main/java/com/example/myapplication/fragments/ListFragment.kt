@@ -19,14 +19,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.HabitAdapter
 import com.example.myapplication.R
+import com.example.myapplication.database.HabitDatabase
 import com.example.myapplication.habit.Habit
 import com.example.myapplication.habit.PrioritySort
 import com.example.myapplication.habit.Type
-import com.example.myapplication.models.HabitModel
 import com.example.myapplication.viewModels.ListViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import java.util.UUID
 
 class ListFragment: Fragment() {
     var callback: ListCallback? = null
@@ -83,9 +82,12 @@ class ListFragment: Fragment() {
     private fun initViewModel() {
         viewModel = ViewModelProvider(this, object: ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return ListViewModel(HabitModel.getInstance(), filterType) as T
+                return ListViewModel(
+                    HabitDatabase.getInstance(activity!!.applicationContext),
+                    filterType
+                ) as T
             }
-        }).get(ListViewModel::class.java)
+        })[ListViewModel::class.java]
 
     }
 
@@ -119,8 +121,6 @@ class ListFragment: Fragment() {
     }
 
     private fun observeHabits() {
-        viewModel.getHabits()
-
         viewModel.habits.observe(viewLifecycleOwner) { habits ->
             filteredHabits.clear()
             filteredHabits.addAll(habits)
@@ -159,7 +159,7 @@ class ListFragment: Fragment() {
         val nameField = bottomSheet.findViewById<EditText>(R.id.find_by_name_field)
         nameField.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                viewModel.setNameAndDescrFilter(s.toString())
+                viewModel.setSearchFilter(s.toString())
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -194,11 +194,11 @@ class ListFragment: Fragment() {
         }
     }
 
-    private fun onEditHabit(v: View?) {
+    fun onEditHabit(v: View?) {
         if (v != null) {
             val position = viewManager.getPosition(v)
             val habit = (viewAdapter as HabitAdapter).getHabit(position)
-            callback?.onEditHabit(habit.Id)
+            callback?.onEditHabit(habit.Id!!)
         }
     }
 
@@ -213,5 +213,5 @@ class ListFragment: Fragment() {
 interface ListCallback {
     fun onAddHabit()
 
-    fun onEditHabit(habitId: UUID)
+    fun onEditHabit(habitId: Int)
 }

@@ -19,9 +19,8 @@
             app:destination="@id/editHabitFragment" />
         <argument
             android:name="habitId"
-            app:argType="java.util.UUID"
-            android:defaultValue="@null"
-            app:nullable="true"/>
+            app:argType="integer"
+            android:defaultValue="-1" />
     </fragment>
     <fragment
         android:id="@+id/aboutFragment"
@@ -41,8 +40,7 @@
             app:launchSingleTop="true" />
         <argument
             android:name="habitId"
-            app:argType="java.util.UUID"
-            android:defaultValue="@null"
-            app:nullable="true"/>
+            app:argType="integer"
+            android:defaultValue="-1" />
     </fragment>
 </navigation>

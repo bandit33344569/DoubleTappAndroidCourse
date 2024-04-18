@@ -13,16 +13,16 @@ import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.myapplication.R
+import com.example.myapplication.database.HabitDatabase
 import com.example.myapplication.habit.Habit
 import com.example.myapplication.habit.Priority
 import com.example.myapplication.habit.Type
-import com.example.myapplication.models.HabitModel
 import com.example.myapplication.viewModels.EditHabitViewModel
-import java.util.UUID
 
 class EditHabitFragment: Fragment() {
-    private var habitId: UUID? = null
+    private var habitId: Int? = null
     private var callback: EditHabitCallback? = null
     private lateinit var viewModel: EditHabitViewModel
 
@@ -44,7 +44,7 @@ class EditHabitFragment: Fragment() {
     )
 
     companion object {
-        fun newInstance(habitId: UUID): EditHabitFragment {
+        fun newInstance(habitId: Int): EditHabitFragment {
             val fragment = EditHabitFragment()
             val bundle = Bundle()
             bundle.putSerializable("habitId", habitId)
@@ -63,8 +63,8 @@ class EditHabitFragment: Fragment() {
         super.onCreate(savedInstanceState)
 
         viewModel = ViewModelProvider(this, object: ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return EditHabitViewModel(HabitModel.getInstance()) as T
+            override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
+                return EditHabitViewModel(HabitDatabase.getInstance(activity!!.applicationContext)) as T
             }
         })[EditHabitViewModel::class.java]
     }
@@ -76,17 +76,14 @@ class EditHabitFragment: Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.edit_habit_fragment, container, false)
         arguments?.let {
-            val habitIdSerializable = it.getSerializable("habitId")
-            if (habitIdSerializable is UUID) {
-                habitId = habitIdSerializable
-            }
+            habitId = it.getInt("habitId")
         }
 
-        if (habitId != null) {
+        if (habitId != -1) {
             val habit = viewModel.getHabitById(habitId!!)
 
             val habitName = view.findViewById<EditText>(R.id.habit_name_edit)
-            habitName.setText(habit!!.name)
+            habitName.setText(habit.name)
 
             val habitDescription = view.findViewById<EditText>(R.id.habit_description_edit)
             habitDescription.setText(habit.description)
@@ -120,7 +117,7 @@ class EditHabitFragment: Fragment() {
             val times = view.findViewById<EditText>(R.id.habit_times_edit)
             val period = view.findViewById<EditText>(R.id.habit_period_edit)
 
-            val priorityValue = priorityIndexToEnum[priority.selectedItem.toString()] ?: Priority.High;
+            val priorityValue = priorityIndexToEnum[priority.selectedItem.toString()] ?: Priority.High
 
             val typeValue = if (type.checkedRadioButtonId == R.id.habit_type_good) {
                 Type.Good
@@ -129,7 +126,7 @@ class EditHabitFragment: Fragment() {
             }
 
             val habit: Habit?
-            if (habitId == null) {
+            if (habitId == -1) {
                 habit = Habit(
                     name.text.toString() ?: "",
                     description.text.toString() ?: "",
@@ -150,7 +147,7 @@ class EditHabitFragment: Fragment() {
                 )
             }
 
-            if (habitId == null) {
+            if (habitId == -1) {
                 viewModel.addHabit(habit)
             } else {
                 viewModel.editHabit(habit)
