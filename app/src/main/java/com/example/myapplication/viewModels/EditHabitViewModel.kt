@@ -16,4 +16,8 @@ class EditHabitViewModel(private val db: HabitDatabase): ViewModel() {
     fun getHabitById(id: Int): Habit {
         return db.habitDao().getHabitById(id)
     }
+
+    fun deleteHabit(habit: Habit){
+        db.habitDao().delete(habit)
+    }
 }

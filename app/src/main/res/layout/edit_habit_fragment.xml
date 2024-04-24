@@ -104,6 +104,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/save_habit_text" />
+            <Button
+                android:id="@+id/delete_habit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/red"
+                android:text="@string/edit_habit_delete_button_text"/>
+
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

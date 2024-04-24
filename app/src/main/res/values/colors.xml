@@ -5,4 +5,5 @@
         <color name="white">#FFFFFFFF</color>
         <color name="green">#008000</color>
         <color name="grey">#242121</color>
+        <color name="red">#FF0000</color>
     </resources>

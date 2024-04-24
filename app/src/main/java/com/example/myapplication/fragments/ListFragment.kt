@@ -88,7 +88,7 @@ class ListFragment: Fragment() {
                 ) as T
             }
         })[ListViewModel::class.java]
-
+        viewModel.setHabitType(filterType)
     }
 
     override fun onCreateView(
@@ -194,7 +194,7 @@ class ListFragment: Fragment() {
         }
     }
 
-    fun onEditHabit(v: View?) {
+    private fun onEditHabit(v: View?) {
         if (v != null) {
             val position = viewManager.getPosition(v)
             val habit = (viewAdapter as HabitAdapter).getHabit(position)

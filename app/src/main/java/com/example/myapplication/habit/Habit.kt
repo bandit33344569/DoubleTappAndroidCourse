@@ -15,17 +15,17 @@ import kotlinx.parcelize.Parcelize
 @TypeConverters(PriorityConverter::class, HabitTypeConverter::class)
 class Habit(
     @ColumnInfo(name = "name")
-    var name: String,
+    val name: String,
     @ColumnInfo(name = "description")
-    var description: String,
+    val description: String,
     @ColumnInfo(name = "priority")
-    var priority: Priority,
+    val priority: Priority,
     @ColumnInfo(name = "type")
-    var type: Type,
+    val type: Type,
     @ColumnInfo(name = "times")
-    var times: Int,
+    val times: Int,
     @ColumnInfo(name = "period")
-    var period: Int,
+    val period: Int,
     @ColumnInfo(name = "id")
     @PrimaryKey(autoGenerate = true)
     val Id: Int? = null
