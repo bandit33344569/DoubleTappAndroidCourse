@@ -88,7 +88,6 @@ class ListFragment: Fragment() {
                 ) as T
             }
         })[ListViewModel::class.java]
-        viewModel.setHabitType(filterType)
     }
 
     override fun onCreateView(

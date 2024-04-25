@@ -1,7 +1,6 @@
 package com.example.myapplication.viewModels
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -12,9 +11,12 @@ import com.example.myapplication.habit.Type
 import java.util.Locale
 
 
-class ListViewModel(private val db: HabitDatabase, private var habitType: Type): ViewModel() {
-    private val habitsObserver = Observer<List<Habit>> { habits ->
-        mutableHabits.value = habits
+
+class ListViewModel(private val db: HabitDatabase, private val habitType: Type): ViewModel() {
+    private lateinit var allHabits: List<Habit>
+    private val getAllObserver = Observer<List<Habit>> { habits ->
+        allHabits = habits
+        applySettings(habits)
     }
     private val mutableHabits: MutableLiveData<List<Habit>> = MutableLiveData()
 
@@ -24,35 +26,53 @@ class ListViewModel(private val db: HabitDatabase, private var habitType: Type):
     private var prioritySort = PrioritySort.None
 
     init {
-        applySettings()
+        db.habitDao().getAll().observeForever(getAllObserver)
     }
 
     override fun onCleared() {
         super.onCleared()
-        db.habitDao().searchHabitsByTypeAndSequenceAndPriority(habitType, sequence, prioritySort).removeObserver(habitsObserver)
-    }
-
-    fun setHabitType(type: Type) {
-        this.habitType = type
-        applySettings()
+        db.habitDao().getAll().removeObserver(getAllObserver)
     }
 
     fun setSearchFilter(sequence: String) {
         this.sequence = sequence.lowercase(Locale.ROOT)
-        applySettings()
+        applySettings(allHabits)
     }
 
     fun setPrioritySort(prioritySort: PrioritySort) {
         this.prioritySort = prioritySort
-        applySettings()
+        applySettings(allHabits)
     }
 
-    private fun applySettings() {
-        val type = habitType
-        val sequence = this.sequence
-        val prioritySort = this.prioritySort
-        db.habitDao().searchHabitsByTypeAndSequenceAndPriority(type, sequence, prioritySort)
-            .observeForever(habitsObserver)
+    private fun applySettings(habits: List<Habit>) {
+        var filteredHabits = filterByType(habits)
+        filteredHabits = filterBySequence(filteredHabits)
+        filteredHabits = sortByPriority(filteredHabits)
+        mutableHabits.value = filteredHabits
     }
 
+    private fun filterByType(habits: List<Habit>): List<Habit> {
+        return habits.filter{it.type == habitType}
+    }
+
+    private fun filterBySequence(habits: List<Habit>): List<Habit> {
+        if (this.sequence != "") {
+            return habits.filter {
+                it.name.lowercase(Locale.ROOT).contains(this.sequence) or
+                        it.description.lowercase(Locale.ROOT).contains(this.sequence)
+            }
+        }
+        return habits
+    }
+
+    private fun sortByPriority(habits: List<Habit>): List<Habit> {
+        if (prioritySort == PrioritySort.HighToLow) {
+            return habits.sortedByDescending {it.priority}
+        }
+        if (prioritySort == PrioritySort.LowToHigh) {
+            return habits.sortedBy {it.priority}
+        }
+
+        return habits
+    }
 }

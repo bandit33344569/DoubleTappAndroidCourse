@@ -27,6 +27,9 @@ interface HabitDao {
     @Delete
     fun delete(habit: Habit)
 
+    @Query("SELECT * FROM habits WHERE type = :type")
+    fun getHabitByType(type: Type): LiveData<List<Habit>>
+
     @Query("SELECT * FROM habits WHERE type = :type AND (name LIKE '%' || :sequence || '%' OR description LIKE '%' || :sequence || '%') ORDER BY CASE :prioritySort " +
             "WHEN 'HighToLow' THEN priority END DESC, " +
             "CASE :prioritySort WHEN 'LowToHigh' THEN priority END ASC, " +
