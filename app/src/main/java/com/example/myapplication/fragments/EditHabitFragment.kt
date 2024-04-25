@@ -109,22 +109,23 @@ class EditHabitFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val name = view.findViewById<EditText>(R.id.habit_name_edit)
-        val description = view.findViewById<EditText>(R.id.habit_description_edit)
-        val priority = view.findViewById<Spinner>(R.id.habit_priority_edit)
-        val type = view.findViewById<RadioGroup>(R.id.habit_type_edit)
-        val times = view.findViewById<EditText>(R.id.habit_times_edit)
-        val period = view.findViewById<EditText>(R.id.habit_period_edit)
-
-        val priorityValue = priorityIndexToEnum[priority.selectedItem.toString()] ?: Priority.High
-
-        val typeValue = if (type.checkedRadioButtonId == R.id.habit_type_good) {
-            Type.Good
-        } else {
-            Type.Bad
-        }
 
         fun getHabit(habitId: Int?): Habit {
+            val name = view.findViewById<EditText>(R.id.habit_name_edit)
+            val description = view.findViewById<EditText>(R.id.habit_description_edit)
+            val priority = view.findViewById<Spinner>(R.id.habit_priority_edit)
+            val type = view.findViewById<RadioGroup>(R.id.habit_type_edit)
+            val times = view.findViewById<EditText>(R.id.habit_times_edit)
+            val period = view.findViewById<EditText>(R.id.habit_period_edit)
+
+            val priorityValue = priorityIndexToEnum[priority.selectedItem.toString()] ?: Priority.High
+
+            val typeValue = if (type.checkedRadioButtonId == R.id.habit_type_good) {
+                Type.Good
+            } else {
+                Type.Bad
+            }
+
             val habit: Habit?
             if (habitId == -1) {
                 habit = Habit(

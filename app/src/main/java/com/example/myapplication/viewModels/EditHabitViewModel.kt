@@ -7,6 +7,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
@@ -16,6 +17,11 @@ class EditHabitViewModel(private val db: HabitDatabase) : ViewModel(), Coroutine
     private val job = SupervisorJob()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job + CoroutineExceptionHandler { _, e -> throw e }
+
+    override fun onCleared() {
+        super.onCleared()
+        coroutineContext.cancelChildren()
+    }
 
     fun addHabit(habit: Habit) {
         launch {

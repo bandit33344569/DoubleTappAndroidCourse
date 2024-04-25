@@ -21,7 +21,7 @@ class Habit(
     @ColumnInfo(name = "priority")
     val priority: Priority,
     @ColumnInfo(name = "type")
-    val type: Type,
+    var type: Type,
     @ColumnInfo(name = "times")
     val times: Int,
     @ColumnInfo(name = "period")
