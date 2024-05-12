@@ -1,5 +1,6 @@
 package com.example.myapplication.viewModels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -8,12 +9,18 @@ import com.example.myapplication.database.HabitDatabase
 import com.example.myapplication.habit.Habit
 import com.example.myapplication.habit.PrioritySort
 import com.example.myapplication.habit.Type
+import com.example.myapplication.repository.ApiResponse
+import com.example.myapplication.repository.HabitServerRep
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 
-
 class ListViewModel(private val db: HabitDatabase, private val habitType: Type): ViewModel() {
-    private lateinit var allHabits: List<Habit>
+    private val HabitServerRep = HabitServerRep(db.habitDao())
+    private lateinit var  allHabits: List<Habit>
     private val getAllObserver = Observer<List<Habit>> { habits ->
         allHabits = habits
         applySettings(habits)
@@ -27,6 +34,7 @@ class ListViewModel(private val db: HabitDatabase, private val habitType: Type):
 
     init {
         db.habitDao().getAll().observeForever(getAllObserver)
+        allHabits = db.habitDao().getAll().value ?: emptyList()
     }
 
     override fun onCleared() {
@@ -35,20 +43,24 @@ class ListViewModel(private val db: HabitDatabase, private val habitType: Type):
     }
 
     fun setSearchFilter(sequence: String) {
-        this.sequence = sequence.lowercase(Locale.ROOT)
-        applySettings(allHabits)
+        if (::allHabits.isInitialized) {
+            this.sequence = sequence.lowercase(Locale.ROOT)
+            applySettings(allHabits)
+        }
     }
 
     fun setPrioritySort(prioritySort: PrioritySort) {
-        this.prioritySort = prioritySort
-        applySettings(allHabits)
+        if (::allHabits.isInitialized) {
+            this.prioritySort = prioritySort
+            applySettings(allHabits)
+        }
     }
 
     private fun applySettings(habits: List<Habit>) {
         var filteredHabits = filterByType(habits)
         filteredHabits = filterBySequence(filteredHabits)
         filteredHabits = sortByPriority(filteredHabits)
-        mutableHabits.value = filteredHabits
+        mutableHabits.postValue(filteredHabits)
     }
 
     private fun filterByType(habits: List<Habit>): List<Habit> {
@@ -74,5 +86,18 @@ class ListViewModel(private val db: HabitDatabase, private val habitType: Type):
         }
 
         return habits
+    }
+
+    fun loadHabit() {
+        loadHabitFromServer()
+    }
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun loadHabitFromServer(){
+        GlobalScope.launch(Dispatchers.IO){
+            val apiResponse = HabitServerRep.loadHabitFromServer()
+            if (apiResponse is ApiResponse.Error){
+                Log.d("HabitServerRepository.loadHabitFromServer", "Error connection")
+            }
+        }
     }
 }

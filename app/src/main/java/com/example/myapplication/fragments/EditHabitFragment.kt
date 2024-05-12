@@ -20,9 +20,10 @@ import com.example.myapplication.habit.Habit
 import com.example.myapplication.habit.Priority
 import com.example.myapplication.habit.Type
 import com.example.myapplication.viewModels.EditHabitViewModel
+import java.time.LocalDate
 
 class EditHabitFragment : Fragment() {
-    private var habitId: Int? = null
+    private var habitId: String? = "null"
     private var callback: EditHabitCallback? = null
     private lateinit var viewModel: EditHabitViewModel
 
@@ -76,10 +77,10 @@ class EditHabitFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.edit_habit_fragment, container, false)
         arguments?.let {
-            habitId = it.getInt("habitId")
+            habitId = it.getString("habitId")
         }
 
-        if (habitId != -1) {
+        if (habitId != "null") {
             val habit = viewModel.getHabitById(habitId!!)
 
             val habitName = view.findViewById<EditText>(R.id.habit_name_edit)
@@ -110,7 +111,7 @@ class EditHabitFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        fun getHabit(habitId: Int?): Habit {
+        fun getHabit(habitId: String?): Habit {
             val name = view.findViewById<EditText>(R.id.habit_name_edit)
             val description = view.findViewById<EditText>(R.id.habit_description_edit)
             val priority = view.findViewById<Spinner>(R.id.habit_priority_edit)
@@ -127,14 +128,15 @@ class EditHabitFragment : Fragment() {
             }
 
             val habit: Habit?
-            if (habitId == -1) {
+            if (habitId == "null") {
                 habit = Habit(
                     name.text.toString() ?: "",
                     description.text.toString() ?: "",
                     priorityValue ?: Priority.High,
                     typeValue ?: Type.Good,
                     times?.text?.toString()?.toInt() ?: 1,
-                    period?.text?.toString()?.toInt() ?: 1
+                    period?.text?.toString()?.toInt() ?: 1,
+                    date = LocalDate.now().toEpochDay().toInt()
                 )
             } else {
                 habit = Habit(
@@ -144,7 +146,8 @@ class EditHabitFragment : Fragment() {
                     typeValue ?: Type.Good,
                     times?.text?.toString()?.toInt() ?: 1,
                     period?.text?.toString()?.toInt() ?: 1,
-                    habitId!!
+                    habitId!!,
+                    date = LocalDate.now().toEpochDay().toInt()
                 )
             }
             return habit
@@ -152,7 +155,7 @@ class EditHabitFragment : Fragment() {
 
         fun onSave() {
             val habit: Habit = getHabit(habitId)
-            if (habitId == -1) {
+            if (habitId == "null") {
                 viewModel.addHabit(habit)
             } else {
                 viewModel.editHabit(habit)
@@ -161,7 +164,7 @@ class EditHabitFragment : Fragment() {
         }
 
         fun onDelete() {
-            if (habitId != -1) {
+            if (habitId != "null") {
                 val habit: Habit = getHabit(habitId)
                 viewModel.deleteHabit(habit)
             }

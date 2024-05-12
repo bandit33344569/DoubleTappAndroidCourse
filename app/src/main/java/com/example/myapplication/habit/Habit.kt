@@ -9,7 +9,6 @@ import androidx.room.TypeConverters
 import kotlinx.parcelize.Parcelize
 
 
-
 @Parcelize
 @Entity(tableName = "habits")
 @TypeConverters(PriorityConverter::class, HabitTypeConverter::class)
@@ -21,14 +20,19 @@ class Habit(
     @ColumnInfo(name = "priority")
     val priority: Priority,
     @ColumnInfo(name = "type")
-    var type: Type,
+    val type: Type,
     @ColumnInfo(name = "times")
     val times: Int,
     @ColumnInfo(name = "period")
     val period: Int,
+    @PrimaryKey
     @ColumnInfo(name = "id")
-    @PrimaryKey(autoGenerate = true)
-    val Id: Int? = null
+    var Id: String = "",
+    @ColumnInfo(name = "date")
+    val date: Int = -1,
+    @ColumnInfo(name = "color")
+    val color: Int = 0
+
 ) : Parcelable {
 }
 

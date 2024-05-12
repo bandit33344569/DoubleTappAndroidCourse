@@ -78,7 +78,7 @@ class MainActivity : FragmentActivity(), ListCallback, EditHabitCallback {
         navController.navigate(action)
     }
 
-    override fun onEditHabit(habitId: Int) {
+    override fun onEditHabit(habitId: String) {
         val action = HomeFragmentDirections.actionHomeFragmentToEditHabitFragment(habitId)
         navController.navigate(action)
     }

@@ -13,19 +13,19 @@ import com.example.myapplication.habit.Type
 @Dao
 interface HabitDao {
     @Query("SELECT * from habits")
-    fun getAll(): LiveData<List<Habit>>
+     fun getAll(): LiveData<List<Habit>>
 
     @Query("SELECT * FROM habits WHERE id = (:id) LIMIT 1")
-    fun getHabitById(id: Int): Habit
+     fun getHabitById(id: String): Habit
 
     @Insert
-    fun insert(habit: Habit)
+     fun insert(habit: Habit)
 
     @Update
-    fun update(habit: Habit)
+     fun update(habit: Habit)
 
     @Delete
-    fun delete(habit: Habit)
+     fun delete(habit: Habit)
 
     @Query("SELECT * FROM habits WHERE type = :type")
     fun getHabitByType(type: Type): LiveData<List<Habit>>

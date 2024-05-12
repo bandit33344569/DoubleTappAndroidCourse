@@ -101,6 +101,7 @@ class ListFragment: Fragment() {
         initFab(view)
         observeHabits()
         initBottomSheet(view)
+        viewModel.loadHabit()
 
         return view
     }
@@ -211,6 +212,5 @@ class ListFragment: Fragment() {
 
 interface ListCallback {
     fun onAddHabit()
-
-    fun onEditHabit(habitId: Int)
+    fun onEditHabit(habitId: String)
 }
