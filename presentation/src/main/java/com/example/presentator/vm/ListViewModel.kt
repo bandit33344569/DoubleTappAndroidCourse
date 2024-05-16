@@ -13,8 +13,8 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
 
-class ListViewModel @Inject constructor(val useCase: HabitsUseCase, private val habitType: Type): ViewModel() {
-
+class ListViewModel @Inject constructor(val useCase: HabitsUseCase): ViewModel() {
+    private lateinit var habitType: Type
     private lateinit var  allHabits: List<Habit>
 
     private val getAllObserver = Observer<List<Habit>> { habits ->
@@ -31,6 +31,10 @@ class ListViewModel @Inject constructor(val useCase: HabitsUseCase, private val 
         useCase.habits.observeForever(getAllObserver)
     }
 
+    fun setType(type: Type){
+        habitType = type
+        applySettings(allHabits)
+    }
     override fun onCleared() {
         super.onCleared()
         useCase.habits.removeObserver(getAllObserver)

@@ -4,11 +4,12 @@ import com.example.presentator.ui.ListFragment
 import dagger.Subcomponent
 
 @Subcomponent
-interface HabitListSubComponent {
+interface HabitListFactorySubComponent {
     @Subcomponent.Builder
     interface Builder{
-        fun build(): HabitListSubComponent
+        fun build(): HabitListFactorySubComponent
     }
 
     fun inject(habitListFragment: ListFragment)
+
 }

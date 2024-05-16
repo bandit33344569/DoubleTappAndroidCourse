@@ -32,7 +32,8 @@ class ListFragment: Fragment() {
     private lateinit var filterType: Type
     private var filteredHabits = mutableListOf<Habit>()
 
-    @Inject lateinit var viewModel: ListViewModel
+    @Inject
+    lateinit var viewModel: ListViewModel
 
 
     companion object {
@@ -75,6 +76,11 @@ class ListFragment: Fragment() {
         (viewAdapter as HabitAdapter).setOnItemClickListener { v -> onEditHabit(v) }
     }
 
+    private fun createViewModel(filterType: Type){
+
+        viewModel.setType(filterType)
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -82,12 +88,12 @@ class ListFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_list_habits, container, false)
-
+        createViewModel(filterType)
+        viewModel.loadHabit()
         initRecyclerView(view)
         initFab(view)
         observeHabits()
         initBottomSheet(view)
-        viewModel.loadHabit()
 
         return view
     }

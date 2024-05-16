@@ -35,8 +35,8 @@ android {
 }
 
 dependencies {
-    implementation("com.google.dagger:dagger:2.27")
-    ksp("com.google.dagger:dagger-compiler:2.27")
+    implementation("com.google.dagger:dagger:2.51.1")
+    ksp("com.google.dagger:dagger-compiler:2.51.1")
     ksp ("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-common:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
