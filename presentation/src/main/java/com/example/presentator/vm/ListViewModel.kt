@@ -13,9 +13,9 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
 
-class ListViewModel @Inject constructor(val useCase: HabitsUseCase): ViewModel() {
+class ListViewModel @Inject constructor( val useCase: HabitsUseCase ): ViewModel() {
     private lateinit var habitType: Type
-    private lateinit var  allHabits: List<Habit>
+    private  var allHabits: List<Habit> = listOf()
 
     private val getAllObserver = Observer<List<Habit>> { habits ->
         applySettings(habits)
@@ -41,17 +41,13 @@ class ListViewModel @Inject constructor(val useCase: HabitsUseCase): ViewModel()
     }
 
     fun setSearchFilter(sequence: String) {
-        if (::allHabits.isInitialized) {
             this.sequence = sequence.lowercase(Locale.ROOT)
             applySettings(allHabits)
-        }
     }
 
     fun setPrioritySort(prioritySort: PrioritySort) {
-        if (::allHabits.isInitialized) {
             this.prioritySort = prioritySort
             applySettings(allHabits)
-        }
     }
 
     private fun applySettings(habits: List<Habit>) {

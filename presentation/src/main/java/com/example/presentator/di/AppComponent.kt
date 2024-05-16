@@ -3,12 +3,13 @@ package com.example.presentator.di
 import android.content.Context
 import com.example.data.di.RepositoryModule
 import com.example.domain.useCase.HabitsUseCase
+import com.example.presentator.ui.ListFragment
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [RepositoryModule::class])
+@Component(modules = [RepositoryModule::class, ViewModelModule::class])
 interface AppComponent {
 
     @Component.Builder
@@ -19,10 +20,11 @@ interface AppComponent {
 
         fun build(): AppComponent
     }
+    fun inject(listFragment: ListFragment)
 
     fun getHabitUseCase(): HabitsUseCase
 
     fun habitCreateSubComponent(): HabitCreateSubComponent.Builder
 
-    fun habitListSubComponent(): HabitListFactorySubComponent.Builder
+    fun habitListSubComponent(): HabitListSubComponent.Builder
 }

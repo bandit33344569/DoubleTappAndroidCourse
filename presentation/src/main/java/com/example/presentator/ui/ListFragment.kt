@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.entity.Habit
 import com.example.domain.entity.Type
 import com.example.presentator.R
+import com.example.presentator.di.HabitTrackerApplication
 import com.example.presentator.enums.PrioritySort
 import com.example.presentator.vm.ListViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -54,9 +55,16 @@ class ListFragment: Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         checkSavedInstanceState(savedInstanceState)
+        initViewModel()
         initViewAdapter()
+
+    }
+
+    private fun initViewModel(){
+        (activity?.applicationContext as HabitTrackerApplication).appComponent.inject(this)
+        viewModel.loadHabit()
+        viewModel.setType(filterType)
     }
 
     private fun checkSavedInstanceState(savedInstanceState: Bundle?) {
@@ -76,10 +84,6 @@ class ListFragment: Fragment() {
         (viewAdapter as HabitAdapter).setOnItemClickListener { v -> onEditHabit(v) }
     }
 
-    private fun createViewModel(filterType: Type){
-
-        viewModel.setType(filterType)
-    }
 
 
     override fun onCreateView(
@@ -88,8 +92,6 @@ class ListFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_list_habits, container, false)
-        createViewModel(filterType)
-        viewModel.loadHabit()
         initRecyclerView(view)
         initFab(view)
         observeHabits()

@@ -48,8 +48,7 @@ class HabitsUseCase @Inject constructor(
 
 
     private fun getNumberRemainingExecutions(habit: Habit): Int {
-        val countBeDone = habit.doneDates.count()
-        return habit.times - countBeDone
+        TODO()
     }
 
 }
