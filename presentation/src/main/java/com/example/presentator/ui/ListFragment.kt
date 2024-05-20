@@ -56,9 +56,7 @@ class ListFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         checkSavedInstanceState(savedInstanceState)
-        initViewModel()
         initViewAdapter()
-
     }
 
     private fun initViewModel(){
@@ -92,11 +90,12 @@ class ListFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_list_habits, container, false)
+        initViewModel()
         initRecyclerView(view)
         initFab(view)
-        observeHabits()
         initBottomSheet(view)
-
+        observeHabits()
+        viewModel.loadHabit()
         return view
     }
 

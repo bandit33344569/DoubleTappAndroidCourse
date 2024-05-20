@@ -12,12 +12,16 @@ class HabitsUseCase @Inject constructor(
     private val repository: IRepository
 ) {
 
-    val habits: LiveData<List<Habit>> = repository.getAllHabit().asLiveData()
+
+    fun getAllHabits(): LiveData<List<Habit>> {
+        return repository.getAllHabit().asLiveData()
+    }
+
 
     suspend fun loadHabitFromServer(){
         val apiResponse = repository.loadHabitFromServer()
         if (apiResponse is ApiResponse.Error){
-            Log.d("HabitServerRepository.loadHabitFromServer", "Error connection")
+            Log.d("HabitServerRepository.loadHabitFromServer", apiResponse.exception.toString())
         }
     }
 

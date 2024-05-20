@@ -3,6 +3,7 @@ package com.example.data.db
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import com.example.data.net.data.ServerHabit
 import com.example.domain.entity.Habit
 import com.example.domain.entity.Priority
 import com.example.domain.entity.Type
@@ -10,13 +11,14 @@ import com.example.domain.entity.Type
 @Entity
 @TypeConverters(HabitTypeConverter::class)
 data class HabitEntity (
-    @PrimaryKey var name: String,
+    var name: String,
     var description: String,
     var priority: Int,
     var type: Int,
     var count: Int,
     var period: Int,
     var color: Int,
+    @PrimaryKey
     var id: String,
     var date: Int,
     var doneDates: List<Int>
@@ -36,7 +38,25 @@ data class HabitEntity (
                 doneDates = habit.doneDates
             )
         }
+
+        fun fromServerHabit(habit: ServerHabit): HabitEntity {
+            val doneDatesList = habit.doneDates ?: emptyList()
+            return HabitEntity(
+                id = habit.uid,
+                date = habit.date,
+                count = habit.count,
+                color = habit.color,
+                period = habit.frequency,
+                type = habit.type,
+                priority = habit.priority,
+                description = habit.description,
+                name = habit.title,
+                doneDates = doneDatesList
+            )
+        }
+
     }
+
 
     fun toHabit() = Habit (
         name = name,

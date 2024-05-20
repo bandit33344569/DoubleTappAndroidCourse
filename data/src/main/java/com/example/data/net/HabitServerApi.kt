@@ -1,6 +1,5 @@
 package com.example.data.net
 
-import com.example.data.net.data.AddServerHabitBody
 import com.example.data.net.data.HabitDone
 import com.example.data.net.data.ServerHabit
 import com.example.domain.entity.HabitUid
@@ -18,7 +17,7 @@ interface HabitServerApi {
     suspend fun saveHabit(@Body habit: ServerHabit): HabitUid
 
     @PUT("habit")
-    suspend fun addHabit(@Body habit: AddServerHabitBody): HabitUid
+    suspend fun addHabit(@Body habit: ServerHabit): HabitUid
 
     @HTTP(method = "DELETE", path = "habit", hasBody = true)
     suspend fun removeHabit(

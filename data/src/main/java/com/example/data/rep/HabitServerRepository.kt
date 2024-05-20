@@ -23,15 +23,14 @@ class HabitServerRepository @Inject constructor(
     }
 
     override suspend fun loadHabitFromServer() : ApiResponse<Unit> {
-        return try {
+
             val response = retryRequest { habitServerAPI.getHabits() }
             response.forEach{
-                updateHabitInLocalDatabase(HabitEntity.fromHabit(it.toHabit()))
+                val habitEntity = HabitEntity.fromServerHabit(it)
+                updateHabitInLocalDatabase(habitEntity)
             }
-            ApiResponse.Success(data = Unit)
-        } catch (e: RuntimeException) {
-            ApiResponse.Error(e)
-        }
+            return ApiResponse.Success(data = Unit)
+
     }
 
     private fun updateHabitInLocalDatabase(habit: HabitEntity){

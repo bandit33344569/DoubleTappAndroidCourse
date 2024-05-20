@@ -13,13 +13,16 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
 
-class ListViewModel @Inject constructor( val useCase: HabitsUseCase ): ViewModel() {
+class ListViewModel @Inject constructor(private val useCase: HabitsUseCase): ViewModel() {
     private lateinit var habitType: Type
-    private  var allHabits: List<Habit> = listOf()
+    private  var allHabitsLiveData: LiveData<List<Habit>> = useCase.getAllHabits()
+    private var allHabits = allHabitsLiveData.value
 
     private val getAllObserver = Observer<List<Habit>> { habits ->
         applySettings(habits)
     }
+
+
     private val mutableHabits: MutableLiveData<List<Habit>> = MutableLiveData()
 
     val habits: LiveData<List<Habit>> = mutableHabits
@@ -28,26 +31,26 @@ class ListViewModel @Inject constructor( val useCase: HabitsUseCase ): ViewModel
     private var prioritySort = PrioritySort.None
 
     init {
-        useCase.habits.observeForever(getAllObserver)
+        useCase.getAllHabits().observeForever(getAllObserver)
     }
 
     fun setType(type: Type){
         habitType = type
-        applySettings(allHabits)
+        applySettings(useCase.getAllHabits().value ?: emptyList())
     }
     override fun onCleared() {
         super.onCleared()
-        useCase.habits.removeObserver(getAllObserver)
+        useCase.getAllHabits().removeObserver(getAllObserver)
     }
 
     fun setSearchFilter(sequence: String) {
             this.sequence = sequence.lowercase(Locale.ROOT)
-            applySettings(allHabits)
+        allHabits?.let { applySettings(it) }
     }
 
     fun setPrioritySort(prioritySort: PrioritySort) {
             this.prioritySort = prioritySort
-            applySettings(allHabits)
+        allHabits?.let { applySettings(it) }
     }
 
     private fun applySettings(habits: List<Habit>) {
