@@ -7,8 +7,8 @@ enum class Priority(val value: String) {
     companion object {
         fun createByPriority(ordinal: Int): Priority {
             return when (ordinal) {
-                1 -> Low
-                2 -> Medium
+                0 -> Low
+                1 -> Medium
                 else -> High
             }
         }

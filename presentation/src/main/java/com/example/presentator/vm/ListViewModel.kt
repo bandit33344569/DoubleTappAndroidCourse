@@ -13,12 +13,13 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
 
-class ListViewModel @Inject constructor(private val useCase: HabitsUseCase): ViewModel() {
+class ListViewModel @Inject constructor(private val useCase: HabitsUseCase) : ViewModel() {
     private lateinit var habitType: Type
-    private  var allHabitsLiveData: LiveData<List<Habit>> = useCase.getAllHabits()
+    private var allHabitsLiveData: LiveData<List<Habit>> = useCase.getAllHabits()
     private var allHabits = allHabitsLiveData.value
 
     private val getAllObserver = Observer<List<Habit>> { habits ->
+        allHabits = habits
         applySettings(habits)
     }
 
@@ -34,22 +35,23 @@ class ListViewModel @Inject constructor(private val useCase: HabitsUseCase): Vie
         useCase.getAllHabits().observeForever(getAllObserver)
     }
 
-    fun setType(type: Type){
+    fun setType(type: Type) {
         habitType = type
         applySettings(useCase.getAllHabits().value ?: emptyList())
     }
+
     override fun onCleared() {
         super.onCleared()
         useCase.getAllHabits().removeObserver(getAllObserver)
     }
 
     fun setSearchFilter(sequence: String) {
-            this.sequence = sequence.lowercase(Locale.ROOT)
+        this.sequence = sequence.lowercase(Locale.ROOT)
         allHabits?.let { applySettings(it) }
     }
 
     fun setPrioritySort(prioritySort: PrioritySort) {
-            this.prioritySort = prioritySort
+        this.prioritySort = prioritySort
         allHabits?.let { applySettings(it) }
     }
 
@@ -61,7 +63,7 @@ class ListViewModel @Inject constructor(private val useCase: HabitsUseCase): Vie
     }
 
     private fun filterByType(habits: List<Habit>): List<Habit> {
-        return habits.filter{it.type == habitType}
+        return habits.filter { it.type == habitType }
     }
 
     private fun filterBySequence(habits: List<Habit>): List<Habit> {
@@ -76,10 +78,10 @@ class ListViewModel @Inject constructor(private val useCase: HabitsUseCase): Vie
 
     private fun sortByPriority(habits: List<Habit>): List<Habit> {
         if (prioritySort == PrioritySort.HighToLow) {
-            return habits.sortedByDescending {it.priority}
+            return habits.sortedByDescending { it.priority }
         }
         if (prioritySort == PrioritySort.LowToHigh) {
-            return habits.sortedBy {it.priority}
+            return habits.sortedBy { it.priority }
         }
 
         return habits
@@ -88,6 +90,13 @@ class ListViewModel @Inject constructor(private val useCase: HabitsUseCase): Vie
     fun loadHabit() {
         viewModelScope.launch {
             useCase.loadHabitFromServer()
+        }
+    }
+
+    fun doneHabit(habit: Habit) {
+        viewModelScope.launch {
+            useCase.doneHabit(habit)
+            allHabits?.let { applySettings(it) }
         }
     }
 }

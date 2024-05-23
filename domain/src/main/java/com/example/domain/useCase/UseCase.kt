@@ -50,9 +50,12 @@ class HabitsUseCase @Inject constructor(
         return repository.getHabitById(nameId)
     }
 
-
-    private fun getNumberRemainingExecutions(habit: Habit): Int {
-        TODO()
+    suspend fun doneHabit(habit: Habit){
+        val apiResponse = repository.doneHabit(habit)
+        if (apiResponse is ApiResponse.Error) {
+            Log.d("HabitServerRep.createHabit", "Error connection")
+        }
     }
+
 
 }

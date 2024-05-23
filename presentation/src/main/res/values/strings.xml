@@ -38,4 +38,7 @@
     <string name="navigation_drawer_open">open</string>
     <string name="navigation_drawer_close">close</string>
     <string name="edit_habit_delete_button_text">Удалить</string>
+    <string name="habitDoneButton">Выполнить</string>
+    <string name="typeHabit">тип</string>
+    <string name="habitPriority">приоритет</string>
 </resources>

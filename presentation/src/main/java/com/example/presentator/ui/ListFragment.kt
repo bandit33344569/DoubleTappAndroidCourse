@@ -56,7 +56,6 @@ class ListFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         checkSavedInstanceState(savedInstanceState)
-        initViewAdapter()
     }
 
     private fun initViewModel(){
@@ -78,7 +77,7 @@ class ListFragment: Fragment() {
     }
 
     private fun initViewAdapter() {
-        viewAdapter = HabitAdapter(filteredHabits)
+        viewAdapter = HabitAdapter(filteredHabits,viewModel)
         (viewAdapter as HabitAdapter).setOnItemClickListener { v -> onEditHabit(v) }
     }
 
@@ -91,6 +90,7 @@ class ListFragment: Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_list_habits, container, false)
         initViewModel()
+        initViewAdapter()
         initRecyclerView(view)
         initFab(view)
         initBottomSheet(view)
@@ -165,6 +165,7 @@ class ListFragment: Fragment() {
 
         })
     }
+
 
     private fun initPrioritySpinner(bottomSheet: View) {
         val prioritySpinner = bottomSheet.findViewById<Spinner>(R.id.sort_by_priority_field)

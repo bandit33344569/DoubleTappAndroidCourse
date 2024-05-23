@@ -1,15 +1,19 @@
 package com.example.data.net.data
 
+import androidx.room.TypeConverters
 import com.example.domain.entity.Habit
 import com.example.domain.entity.Priority
 import com.example.domain.entity.Type
+import com.google.gson.annotations.SerializedName
 
 data class ServerHabit(
     val color: Int,
     val count: Int,
     val date: Int,
     val description: String,
-    var doneDates: List<Int> = listOf(),
+    @TypeConverters(HabitDateConverter::class)
+    @SerializedName("done_dates")
+    var doneDates: List<Int>,
     val frequency: Int,
     val priority: Int,
     val title: String,
@@ -28,6 +32,7 @@ data class ServerHabit(
             date = habit.date,
             frequency = habit.period,
             uid = habit.id,
+            doneDates = habit.doneDates
         )
     }
 

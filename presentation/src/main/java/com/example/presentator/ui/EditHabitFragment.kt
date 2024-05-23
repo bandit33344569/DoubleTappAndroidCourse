@@ -10,14 +10,17 @@ import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Spinner
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.example.domain.entity.Habit
 import com.example.domain.entity.Priority
 import com.example.domain.entity.Type
-import com.example.presentator.di.HabitTrackerApplication
 import com.example.presentator.R
+import com.example.presentator.di.HabitTrackerApplication
 import com.example.presentator.vm.EditHabitViewModel
-import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import javax.inject.Inject
 
 class EditHabitFragment : Fragment() {
@@ -64,6 +67,13 @@ class EditHabitFragment : Fragment() {
     }
 
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        (requireActivity() as FragmentActivity).findViewById<DrawerLayout>(R.id.drawer_layout).setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+    }
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -105,6 +115,7 @@ class EditHabitFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        (requireActivity() as FragmentActivity).findViewById<DrawerLayout>(R.id.drawer_layout).setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
         fun getHabit(habitId: String?): Habit {
             val name = view.findViewById<EditText>(R.id.habit_name_edit)
@@ -131,7 +142,7 @@ class EditHabitFragment : Fragment() {
                     typeValue ?: Type.Good,
                     times?.text?.toString()?.toInt() ?: 1,
                     period?.text?.toString()?.toInt() ?: 1,
-                    date = LocalDate.now().toEpochDay().toInt(),
+                    date = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC).toInt(),
                     doneDates = doneDateHabit
                 )
             } else {
@@ -143,7 +154,7 @@ class EditHabitFragment : Fragment() {
                     times?.text?.toString()?.toInt() ?: 1,
                     period?.text?.toString()?.toInt() ?: 1,
                     habitId!!,
-                    date = LocalDate.now().toEpochDay().toInt(),
+                    date = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC).toInt(),
                     doneDates = doneDateHabit
                 )
             }

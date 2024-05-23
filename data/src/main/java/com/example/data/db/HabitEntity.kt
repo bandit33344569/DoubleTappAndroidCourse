@@ -7,6 +7,7 @@ import com.example.data.net.data.ServerHabit
 import com.example.domain.entity.Habit
 import com.example.domain.entity.Priority
 import com.example.domain.entity.Type
+import com.google.gson.annotations.SerializedName
 
 @Entity
 @TypeConverters(HabitTypeConverter::class)
@@ -21,6 +22,7 @@ data class HabitEntity (
     @PrimaryKey
     var id: String,
     var date: Int,
+    @SerializedName("done_dates")
     var doneDates: List<Int>
 ) {
     companion object {
@@ -40,7 +42,6 @@ data class HabitEntity (
         }
 
         fun fromServerHabit(habit: ServerHabit): HabitEntity {
-            val doneDatesList = habit.doneDates ?: emptyList()
             return HabitEntity(
                 id = habit.uid,
                 date = habit.date,
@@ -51,7 +52,7 @@ data class HabitEntity (
                 priority = habit.priority,
                 description = habit.description,
                 name = habit.title,
-                doneDates = doneDatesList
+                doneDates = habit.doneDates
             )
         }
 

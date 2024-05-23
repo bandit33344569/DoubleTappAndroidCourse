@@ -24,7 +24,7 @@ interface HabitServerApi {
         @Body uid: HabitUid
     )
 
-    @POST("habit")
+    @POST("habit_done")
     suspend fun completeHabit(@Body habitDone: HabitDone)
 
 }
