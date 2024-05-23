@@ -37,7 +37,7 @@ class ListViewModel @Inject constructor(private val useCase: HabitsUseCase) : Vi
 
     fun setType(type: Type) {
         habitType = type
-        applySettings(useCase.getAllHabits().value ?: emptyList())
+        allHabits?.let { applySettings(it) }
     }
 
     override fun onCleared() {

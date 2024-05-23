@@ -39,13 +39,18 @@ class HabitServerRepository @Inject constructor(
     private fun updateHabitInLocalDatabase(habit: HabitEntity) {
         val habitFromDatabase = habitsDao.getHabitById(habit.id)
 
-        if (habit.doneDates.isEmpty()){
-            if (habitFromDatabase.date < habit.date ) {
-                    habitsDao.update(habit)
-            }
+        if (habitFromDatabase == null) {
+            habitsDao.insert(habit)
         }
-        else if (habitFromDatabase.date < habit.date || habitFromDatabase.date < habit.doneDates.last())
-            habitsDao.update(habit)
+        else{
+            if (habit.doneDates.isEmpty()){
+                if (habitFromDatabase.date < habit.date ) {
+                    habitsDao.update(habit)
+                }
+            }
+            else if (habitFromDatabase.date < habit.date || habitFromDatabase.date < habit.doneDates.last())
+                habitsDao.update(habit)
+        }
     }
 
     override fun getHabitById(id: String): Habit {

@@ -2,7 +2,7 @@ package com.example.presentator.di
 
 import android.app.Application
 import android.content.Context
-import com.example.presentator.di.DaggerAppComponent
+
 class HabitTrackerApplication: Application() {
 
     lateinit var appComponent: AppComponent
@@ -23,6 +23,7 @@ class HabitTrackerApplication: Application() {
             .builder()
             .context(context = this)
             .build()
+
 
         mInstance = this
     }
