@@ -1,8 +1,0 @@
-<resources>
-    <string name="app_name">My Application</string>
-    <string name="counterTextView">0</string>
-    <string name="title_activity_second">SecondActivity</string>
-    <string name="SquareButton">Квадрат числа</string>
-    <string name="ReturnToMainButton">Вернуться назад</string>
-    <string name="SquareOfCounterTextView">0</string>
-</resources>

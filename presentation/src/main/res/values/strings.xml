@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="fab_to_add_habit">Fab to add habit</string>
+    <string name="edit_habit_title">Редактирование привычки</string>
+    <string name="habit_name_hint">Название</string>
+    <string name="habit_description_hint">Описание</string>
+    <string name="habit_priority_text">Приоритет</string>
+    <string name="save_habit_text">Сохранить</string>
+    <string name="habit_period_hint">Периодичность (в днях)</string>
+    <string-array name="habit_priorities">
+        <item>Низкий</item>
+        <item>Средний</item>
+        <item>Высокий</item>
+    </string-array>
+
+    <string-array name="sort_by_priority_types">
+        <item>-</item>
+        <item>От высокого к низкому</item>
+        <item>От низкого к высокому</item>
+    </string-array>
+
+    <string name="habit_type_good">Хорошая</string>
+    <string name="habit_type_bad">Плохая</string>
+    <string name="habit_type_text">Тип</string>
+    <string name="habit_times_hint">Повторения</string>
+    <string name="addhabit">AddHabit</string>
+    <string name="name">name</string>
+    <string name="description">description</string>
+    <string name="ActivityAddItem">Редактор привычек</string>
+    <string name="title_about">О приложении</string>
+    <string name="title_habits">Привычки</string>
+    <string name="about_fragment">Информация о приложении</string>
+
+    <string name="find_by_name">Поиск по имени и описанию</string>
+    <string name="sort_by_priority">Сортировка по приоритету</string>
+    <string name="name_or_descr">Имя или описание</string>
+    <string name="find_and_sort">Поиск и сортировка</string>
+    <string name="navigation_drawer_open">open</string>
+    <string name="navigation_drawer_close">close</string>
+    <string name="edit_habit_delete_button_text">Удалить</string>
+    <string name="habitDoneButton">Выполнить</string>
+    <string name="typeHabit">тип</string>
+    <string name="habitPriority">приоритет</string>
+</resources>
